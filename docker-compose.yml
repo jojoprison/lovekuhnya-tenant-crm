@@ -19,9 +19,9 @@ services:
   db:
     image: postgres:16-alpine
     environment:
-      DB_USER: ${DB_USER:-postgres}
-      DB_PASS: ${DB_PASS:-postgres}
-      DB_NAME: ${DB_NAME:-crm}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASS:-postgres}
+      POSTGRES_DB: ${DB_NAME:-crm}
     ports:
       - "${DB_PORT:-5437}:5432"
     volumes:
