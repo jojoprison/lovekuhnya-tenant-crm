@@ -1,4 +1,4 @@
-.PHONY: install up upb down b migrate migrate-new seed test test-cov lint format typecheck clean help
+.PHONY: install up upb down b migrate migrate-new seed test test-cov lint format type clean help
 
 help:
 	@echo "commands"
@@ -25,7 +25,7 @@ help:
 	@echo "  code quality:"
 	@echo "    make lint        - check code (ruff)"
 	@echo "    make format      - format code (black + isort)"
-	@echo "    make typecheck   - type check (mypy)"
+	@echo "    make type   		- type check (mypy)"
 
 
 # creates .venv automatically
@@ -78,5 +78,5 @@ format:
 	uv run black src/ tests/
 	uv run isort src/ tests/
 
-typecheck:
+type:
 	uv run mypy src/
