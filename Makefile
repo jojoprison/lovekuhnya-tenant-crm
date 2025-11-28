@@ -43,7 +43,7 @@ down:
 	docker-compose down
 
 b:
-	docker build -t mini-crm:latest .
+	docker build -t lovekuhnya-tenant-crm:latest .
 
 clean:
 	docker-compose down -v
