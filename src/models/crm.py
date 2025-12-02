@@ -1,10 +1,10 @@
 from datetime import datetime
 from decimal import Decimal
 from typing import List, Optional, Any
-from sqlalchemy import ForeignKey, String, DateTime, Numeric, Boolean, JSON
+from sqlalchemy import ForeignKey, String, DateTime, Numeric, Boolean, JSON, Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.core.database import Base
-from src.models.enums import DealStatus, DealStage, ActivityType
+from src.domain.enums import DealStatus, DealStage, ActivityType
 
 class Contact(Base):
     __tablename__ = "contacts"
@@ -35,8 +35,8 @@ class Deal(Base):
     title: Mapped[str] = mapped_column(String)
     amount: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=0)
     currency: Mapped[str] = mapped_column(String, default="USD")
-    status: Mapped[DealStatus] = mapped_column(String, default=DealStatus.NEW)
-    stage: Mapped[DealStage] = mapped_column(String, default=DealStage.QUALIFICATION)
+    status: Mapped[DealStatus] = mapped_column(SAEnum(DealStatus), default=DealStatus.NEW)
+    stage: Mapped[DealStage] = mapped_column(SAEnum(DealStage), default=DealStage.QUALIFICATION)
     
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -72,7 +72,7 @@ class Activity(Base):
     deal_id: Mapped[int] = mapped_column(ForeignKey("deals.id"))
     author_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id"), nullable=True)
     
-    type: Mapped[ActivityType] = mapped_column(String)
+    type: Mapped[ActivityType] = mapped_column(SAEnum(ActivityType))
     payload: Mapped[dict[str, Any]] = mapped_column(JSON, default={})
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
