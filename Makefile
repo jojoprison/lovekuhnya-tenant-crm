@@ -64,10 +64,10 @@ test-setup:
 	docker-compose exec db psql -U postgres -c "CREATE DATABASE crm_test;" 2>/dev/null || true
 
 test: test-setup
-	docker-compose exec app pytest -v
+	docker-compose exec app uv run pytest -v
 
 test-cov: test-setup
-	docker-compose exec app pytest --cov=src --cov-report=term -v
+	docker-compose exec app uv run pytest --cov=src --cov-report=term -v
 
 
 # local with uv
