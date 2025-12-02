@@ -1,7 +1,4 @@
-"""Backwards-compatible re-export of domain enums.
-
-The canonical enum definitions live in src.domain.enums.
-"""
+"""Re-export domain enums for backwards compatibility."""
 
 from src.domain.enums import UserRole, DealStatus, DealStage, ActivityType
 

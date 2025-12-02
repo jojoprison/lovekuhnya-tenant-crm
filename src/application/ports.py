@@ -1,9 +1,4 @@
-"""Application-level ports (interfaces) for persistence.
-
-These protocols describe the minimal subset of repository behavior
-that application services depend on. Concrete implementations live in
-src.repositories and are wired in by default in the services' __init__.
-"""
+"""Repository interfaces (ports)."""
 
 from __future__ import annotations
 

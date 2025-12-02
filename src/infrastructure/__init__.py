@@ -1,8 +1,4 @@
-"""Infrastructure layer: DB, configuration, security, persistence.
-
-Currently this layer re-exports pieces from src.core and src.repositories
-without changing their internal structure.
-"""
+"""Infrastructure layer."""
 
 from src.core.config import settings
 from src.core.database import Base, AsyncSessionLocal, get_db

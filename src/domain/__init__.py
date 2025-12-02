@@ -1,4 +1,4 @@
-"""Domain layer: core business concepts and business rules."""
+"""Domain layer."""
 
 from src.domain.enums import UserRole, DealStatus, DealStage, ActivityType
 from src.domain.deal_rules import (

@@ -1,9 +1,4 @@
-"""Application layer: use cases / services.
-
-This layer contains:
-- ports.py: Repository interfaces (protocols) for dependency inversion.
-- Services are accessed directly from src.services to avoid circular imports.
-"""
+"""Application layer."""
 
 from src.application.ports import DealRepositoryProtocol, TaskRepositoryProtocol
 

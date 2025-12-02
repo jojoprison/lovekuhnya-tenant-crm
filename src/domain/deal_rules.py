@@ -1,7 +1,4 @@
-"""Domain rules for deals.
-
-Contains validation logic for deal status and stage transitions.
-"""
+"""Deal validation rules."""
 
 from __future__ import annotations
 
