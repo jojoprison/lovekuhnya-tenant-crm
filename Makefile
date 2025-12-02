@@ -1,4 +1,4 @@
-.PHONY: install up upb down b migrate migrate-new seed test test-cov lint format type clean help
+.PHONY: install up upb down b migrate migrate-new demo test test-cov smoke lint lint-fix clean help
 
 help:
 	@echo "commands"
@@ -21,6 +21,7 @@ help:
 	@echo "  tests:"
 	@echo "    make test        - run tests"
 	@echo "    make test-cov    - run tests with coverage"
+	@echo "    make smoke       - run API smoke tests (curl)"
 	@echo ""
 	@echo "  code quality:"
 	@echo "    make lint        - check code (for CI)"
@@ -67,6 +68,9 @@ test: test-setup
 
 test-cov: test-setup
 	docker-compose exec app uv run pytest --cov=src --cov-report=term -v
+
+smoke:
+	@./scripts/smoke_test.sh
 
 
 # local with uv
