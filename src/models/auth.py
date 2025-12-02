@@ -29,6 +29,9 @@ class User(Base):
         back_populates="user"
     )
 
+    def __str__(self) -> str:
+        return f"{self.name} <{self.email}>"
+
 
 class Organization(Base):
     __tablename__ = "organizations"
@@ -47,6 +50,9 @@ class Organization(Base):
     )
     deals: Mapped[list[Deal]] = relationship(back_populates="organization")
 
+    def __str__(self) -> str:
+        return f"{self.name} (ID: {self.id})"
+
 
 class OrganizationMember(Base):
     __tablename__ = "organization_members"
@@ -63,3 +69,6 @@ class OrganizationMember(Base):
 
     organization: Mapped[Organization] = relationship(back_populates="members")
     user: Mapped[User] = relationship(back_populates="memberships")
+
+    def __str__(self) -> str:
+        return f"{self.role.value} — user {self.user_id} (ID: {self.id})"

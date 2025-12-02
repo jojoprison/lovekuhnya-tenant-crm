@@ -5,6 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from src.admin import setup_admin
 from src.core.exceptions import AppException
 from src.infrastructure import settings
 from src.interface import router as api_router
@@ -53,6 +54,8 @@ async def app_exception_handler(request: Request, exc: AppException):
 
 
 app.include_router(api_router)
+
+setup_admin(app)
 
 
 @app.get("/health")

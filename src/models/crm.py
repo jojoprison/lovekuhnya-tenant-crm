@@ -41,6 +41,9 @@ class Contact(Base):
     owner: Mapped[User] = relationship()
     deals: Mapped[list[Deal]] = relationship(back_populates="contact")
 
+    def __str__(self) -> str:
+        return f"{self.name} (ID: {self.id})"
+
 
 class Deal(Base):
     __tablename__ = "deals"
@@ -77,6 +80,9 @@ class Deal(Base):
         back_populates="deal", cascade="all, delete-orphan"
     )
 
+    def __str__(self) -> str:
+        return f"{self.title} — {self.amount} {self.currency} (ID: {self.id})"
+
 
 class Task(Base):
     __tablename__ = "tasks"
@@ -93,6 +99,9 @@ class Task(Base):
     )
 
     deal: Mapped[Deal] = relationship(back_populates="tasks")
+
+    def __str__(self) -> str:
+        return f"{self.title} (ID: {self.id})"
 
 
 class Activity(Base):
@@ -112,3 +121,6 @@ class Activity(Base):
 
     deal: Mapped[Deal] = relationship(back_populates="activities")
     author: Mapped[User] = relationship()
+
+    def __str__(self) -> str:
+        return f"{self.type.value} (ID: {self.id})"
