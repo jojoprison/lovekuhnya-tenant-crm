@@ -1,26 +1,13 @@
 """Application layer: use cases / services.
 
-For now this layer re-exports existing service classes from src.services
-so that the dependency direction (interface -> application -> infrastructure)
-can be expressed without rewriting business logic.
+This layer contains:
+- ports.py: Repository interfaces (protocols) for dependency inversion.
+- Services are accessed directly from src.services to avoid circular imports.
 """
 
-from src.services import (
-    AuthService,
-    OrganizationService,
-    ContactService,
-    DealService,
-    TaskService,
-    ActivityService,
-    AnalyticsService,
-)
+from src.application.ports import DealRepositoryProtocol, TaskRepositoryProtocol
 
 __all__ = [
-    "AuthService",
-    "OrganizationService",
-    "ContactService",
-    "DealService",
-    "TaskService",
-    "ActivityService",
-    "AnalyticsService",
+    "DealRepositoryProtocol",
+    "TaskRepositoryProtocol",
 ]

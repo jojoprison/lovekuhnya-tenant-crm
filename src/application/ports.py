@@ -7,13 +7,14 @@ src.repositories and are wired in by default in the services' __init__.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
-from typing import Protocol, Sequence
+from typing import TYPE_CHECKING, Protocol, Sequence
 
-from src.models import Deal, Task
-from src.domain import DealStatus, DealStage
+from src.domain.enums import DealStatus, DealStage
+
+if TYPE_CHECKING:
+    from src.models import Deal, Task
 
 
 class DealRepositoryProtocol(Protocol):
