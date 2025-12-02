@@ -51,13 +51,13 @@ clean:
 
 # run inside app container
 migrate:
-	docker-compose exec app alembic upgrade head
+	docker-compose exec app uv run alembic upgrade head
 
 migrate-new:
-	docker-compose exec app alembic revision --autogenerate -m "$(MSG)"
+	docker-compose exec app uv run alembic revision --autogenerate -m "$(MSG)"
 
 seed:
-	docker-compose exec app python -m src.scripts.seed
+	docker-compose exec app uv run python -m src.scripts.seed
 
 
 test-setup:
