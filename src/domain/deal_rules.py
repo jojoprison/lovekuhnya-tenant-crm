@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from decimal import Decimal
-from typing import TYPE_CHECKING, Sequence
+from typing import TYPE_CHECKING
 
 from src.core.exceptions import ForbiddenError, ValidationError
 from src.domain.enums import DealStage, DealStatus, UserRole
@@ -49,5 +50,8 @@ def ensure_stage_change_is_valid(
     old_idx = STAGE_ORDER.index(deal.stage)
     new_idx = STAGE_ORDER.index(new_stage)
 
-    if new_idx < old_idx and member.role not in [UserRole.OWNER, UserRole.ADMIN]:
+    if new_idx < old_idx and member.role not in [
+        UserRole.OWNER,
+        UserRole.ADMIN,
+    ]:
         raise ForbiddenError("Only admin/owner can rollback deal stage")

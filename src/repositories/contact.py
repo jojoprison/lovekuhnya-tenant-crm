@@ -1,4 +1,4 @@
-from typing import Sequence
+from collections.abc import Sequence
 
 from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -71,7 +71,9 @@ class ContactRepository(BaseRepository[Contact]):
         from src.models import Deal
 
         stmt = (
-            select(func.count()).select_from(Deal).where(Deal.contact_id == contact_id)
+            select(func.count())
+            .select_from(Deal)
+            .where(Deal.contact_id == contact_id)
         )
         result = await self.session.execute(stmt)
         return (result.scalar() or 0) > 0

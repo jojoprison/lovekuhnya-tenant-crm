@@ -1,8 +1,9 @@
+from collections.abc import Sequence
 from datetime import datetime, timedelta
 from decimal import Decimal
-from typing import Sequence
+from typing import Any
 
-from sqlalchemy import case, func, select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.models import Deal, DealStage, DealStatus
@@ -143,7 +144,7 @@ class DealRepository(BaseRepository[Deal]):
         )
         result = await self.session.execute(stmt)
 
-        funnel = {}
+        funnel: dict[str, Any] = {}
         for row in result:
             stage = row.stage
             if stage not in funnel:

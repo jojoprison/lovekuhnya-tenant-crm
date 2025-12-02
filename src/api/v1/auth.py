@@ -17,7 +17,9 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 @router.post(
-    "/register", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED
+    "/register",
+    response_model=RegisterResponse,
+    status_code=status.HTTP_201_CREATED,
 )
 async def register(
     data: UserCreate,
@@ -40,7 +42,9 @@ async def register(
             refresh_token=result["refresh_token"],
         )
     except ConflictError as e:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail=e.message
+        )
 
 
 @router.post("/login", response_model=LoginResponse)
@@ -51,14 +55,18 @@ async def login(
     """Authenticate user and get tokens."""
     try:
         auth_service = AuthService(db)
-        result = await auth_service.login(email=data.email, password=data.password)
+        result = await auth_service.login(
+            email=data.email, password=data.password
+        )
         return LoginResponse(
             user=result["user"],
             access_token=result["access_token"],
             refresh_token=result["refresh_token"],
         )
     except UnauthorizedError as e:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail=e.message
+        )
 
 
 @router.post("/refresh", response_model=TokenResponse)
@@ -75,4 +83,6 @@ async def refresh_token(
             refresh_token=result["refresh_token"],
         )
     except UnauthorizedError as e:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail=e.message
+        )

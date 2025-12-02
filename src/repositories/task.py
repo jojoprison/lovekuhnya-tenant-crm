@@ -1,5 +1,5 @@
+from collections.abc import Sequence
 from datetime import datetime
-from typing import Sequence
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -47,7 +47,11 @@ class TaskRepository(BaseRepository[Task]):
         """Get all tasks for organization (via deals)."""
         from src.models import Deal
 
-        stmt = select(Task).join(Deal).where(Deal.organization_id == organization_id)
+        stmt = (
+            select(Task)
+            .join(Deal)
+            .where(Deal.organization_id == organization_id)
+        )
 
         if only_open:
             stmt = stmt.where(Task.is_done == False)
@@ -64,7 +68,11 @@ class TaskRepository(BaseRepository[Task]):
 
     async def count_by_deal(self, deal_id: int, only_open: bool = False) -> int:
         """Count tasks for a deal."""
-        stmt = select(func.count()).select_from(Task).where(Task.deal_id == deal_id)
+        stmt = (
+            select(func.count())
+            .select_from(Task)
+            .where(Task.deal_id == deal_id)
+        )
 
         if only_open:
             stmt = stmt.where(Task.is_done == False)

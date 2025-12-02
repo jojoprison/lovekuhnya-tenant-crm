@@ -34,7 +34,7 @@ async def get_contacts(
         owner_id=owner_id,
     )
     return ContactListResponse(
-        items=contacts,
+        items=contacts,  # type: ignore[arg-type]
         total=total,
         page=page,
         page_size=page_size,
@@ -51,12 +51,18 @@ async def get_contact(
     """Get contact by ID."""
     try:
         service = ContactService(db)
-        return await service.get_contact(contact_id, organization_id, current_user)
+        return await service.get_contact(
+            contact_id, organization_id, current_user
+        )
     except NotFoundError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=e.message
+        )
 
 
-@router.post("", response_model=ContactResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "", response_model=ContactResponse, status_code=status.HTTP_201_CREATED
+)
 async def create_contact(
     data: ContactCreate,
     db: DbSession,
@@ -92,9 +98,13 @@ async def update_contact(
             **data.model_dump(exclude_unset=True),
         )
     except NotFoundError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=e.message
+        )
     except ForbiddenError as e:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail=e.message
+        )
 
 
 @router.delete("/{contact_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -109,8 +119,14 @@ async def delete_contact(
         service = ContactService(db)
         await service.delete_contact(contact_id, organization_id, current_user)
     except NotFoundError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=e.message
+        )
     except ForbiddenError as e:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail=e.message
+        )
     except ConflictError as e:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail=e.message
+        )

@@ -35,9 +35,11 @@ async def get_tasks(
             page=page,
             page_size=page_size,
         )
-        return TaskListResponse(items=tasks)
+        return TaskListResponse(items=tasks)  # type: ignore[arg-type]
     except NotFoundError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=e.message
+        )
 
 
 @router.get("/{task_id}", response_model=TaskResponse)
@@ -52,10 +54,14 @@ async def get_task(
         service = TaskService(db)
         return await service.get_task(task_id, organization_id, current_user)
     except NotFoundError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=e.message
+        )
 
 
-@router.post("", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "", response_model=TaskResponse, status_code=status.HTTP_201_CREATED
+)
 async def create_task(
     data: TaskCreate,
     db: DbSession,
@@ -74,11 +80,17 @@ async def create_task(
             description=data.description,
         )
     except NotFoundError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=e.message
+        )
     except ForbiddenError as e:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail=e.message
+        )
     except ValidationError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=e.message
+        )
 
 
 @router.patch("/{task_id}", response_model=TaskResponse)
@@ -99,11 +111,17 @@ async def update_task(
             **data.model_dump(exclude_unset=True),
         )
     except NotFoundError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=e.message
+        )
     except ForbiddenError as e:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail=e.message
+        )
     except ValidationError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=e.message
+        )
 
 
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -118,6 +136,10 @@ async def delete_task(
         service = TaskService(db)
         await service.delete_task(task_id, organization_id, current_user)
     except NotFoundError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=e.message
+        )
     except ForbiddenError as e:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail=e.message
+        )

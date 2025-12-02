@@ -151,7 +151,9 @@ async def test_full_crm_scenario(client: AsyncClient):
 
     comment = comment_response.json()
     assert comment["type"] == "comment"
-    assert comment["payload"]["text"] == "Client is very interested in the project"
+    assert (
+        comment["payload"]["text"] == "Client is very interested in the project"
+    )
 
     # ============================================
     # 7. ИЗМЕНЕНИЕ СТАДИИ СДЕЛКИ

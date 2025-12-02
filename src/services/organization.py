@@ -1,4 +1,4 @@
-from typing import Sequence
+from collections.abc import Sequence
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,7 +13,9 @@ class OrganizationService:
         self.session = session
         self.repo = OrganizationRepository(session)
 
-    async def get_user_organizations(self, user: User) -> Sequence[Organization]:
+    async def get_user_organizations(
+        self, user: User
+    ) -> Sequence[Organization]:
         """Get all organizations where user is a member."""
         return await self.repo.get_user_organizations(user.id)
 
@@ -55,7 +57,9 @@ class OrganizationService:
         # Check if already a member
         existing = await self.repo.get_member(organization_id, user_id)
         if existing:
-            raise ValidationError("User is already a member of this organization")
+            raise ValidationError(
+                "User is already a member of this organization"
+            )
 
         member = await self.repo.add_member(organization_id, user_id, role)
         await self.session.commit()
@@ -82,7 +86,7 @@ class OrganizationService:
             current_member = await self.repo.get_member(
                 organization_id, current_user.id
             )
-            if current_member.role != UserRole.OWNER:
+            if not current_member or current_member.role != UserRole.OWNER:
                 raise ForbiddenError("Only owner can change owner role")
 
         member = await self.repo.update_member_role(member, new_role)

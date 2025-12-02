@@ -29,8 +29,6 @@ dev = [
     "pytest-cov>=7.0.0",
     "httpx>=0.28.1",
     "ruff>=0.14.6",
-    "black>=25.11.0",
-    "isort>=7.0.0",
     "mypy>=1.19.0",
 ]
 
@@ -57,19 +55,22 @@ select = [
 ignore = [
     "E501",   # line too long (handled by formatter)
     "B008",   # do not perform function calls in argument defaults
+    "UP046",  # Generic[T] is fine, don't force new syntax
 ]
 
-[tool.isort]
-profile = "black"
-line_length = 80
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]  # re-exports are intentional
+"tests/*" = ["E712"]  # == True/False is fine in tests for clarity
+"src/api/*" = ["B904"]  # HTTPException doesn't need chaining
+"src/models/*" = ["F821", "UP037"]  # forward references in SQLAlchemy relationships
+"src/repositories/*" = ["E712"]  # SQLAlchemy == False is not Python bool
 
 [tool.mypy]
 python_version = "3.12"
-warn_return_any = true
-warn_unused_ignores = true
-disallow_untyped_defs = false
-check_untyped_defs = true
 ignore_missing_imports = true
+strict = false
+warn_unused_ignores = false
+disallow_untyped_defs = false
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

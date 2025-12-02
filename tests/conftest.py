@@ -1,4 +1,4 @@
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
 import pytest
 from httpx import ASGITransport, AsyncClient
@@ -19,7 +19,9 @@ TEST_DATABASE_URL = settings.SQLALCHEMY_DATABASE_URI.replace(
 )
 
 # Use NullPool to avoid connection issues in async tests
-test_engine = create_async_engine(TEST_DATABASE_URL, echo=False, poolclass=NullPool)
+test_engine = create_async_engine(
+    TEST_DATABASE_URL, echo=False, poolclass=NullPool
+)
 TestSessionLocal = async_sessionmaker(
     bind=test_engine,
     class_=AsyncSession,

@@ -23,9 +23,8 @@ help:
 	@echo "    make test-cov    - run tests with coverage"
 	@echo ""
 	@echo "  code quality:"
-	@echo "    make lint        - check code (ruff)"
-	@echo "    make format      - format code (black + isort)"
-	@echo "    make type   		- type check (mypy)"
+	@echo "    make lint        - check code (for CI)"
+	@echo "    make lint-fix    - auto-fix code"
 
 
 # creates .venv automatically
@@ -72,11 +71,11 @@ test-cov: test-setup
 
 # local with uv
 lint:
-	uv run ruff check src/
+	uv run ruff format --check src/ tests/
+	uv run ruff check src/ tests/
+	uv run mypy src/
 
-format:
-	uv run black src/ tests/
-	uv run isort src/ tests/
-
-type:
+lint-fix:
+	uv run ruff format src/ tests/
+	uv run ruff check --fix src/ tests/
 	uv run mypy src/

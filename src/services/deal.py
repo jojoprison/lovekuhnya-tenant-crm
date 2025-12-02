@@ -1,15 +1,13 @@
+from collections.abc import Sequence
 from decimal import Decimal
-from typing import Sequence
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.application.ports import DealRepositoryProtocol
-from src.core.exceptions import ForbiddenError, NotFoundError
+from src.core.exceptions import ForbiddenError, NotFoundError, ValidationError
 from src.domain import (
-    STAGE_ORDER,
     DealStage,
     DealStatus,
-    UserRole,
     ensure_stage_change_is_valid,
     ensure_status_change_is_valid,
 )
@@ -29,8 +27,7 @@ class DealService:
         deal_repo: DealRepositoryProtocol | None = None,
     ) -> None:
         self.session = session
-        # Application depends on the port; concrete repo is wired by default.
-        self.repo: DealRepositoryProtocol = deal_repo or DealRepository(session)
+        self.repo = deal_repo or DealRepository(session)
         self.contact_repo = ContactRepository(session)
         self.activity_repo = ActivityRepository(session)
         self.org_service = OrganizationService(session)
@@ -137,7 +134,10 @@ class DealService:
             raise NotFoundError("Deal not found")
 
         # Members can only update their own deals
-        if not self.org_service.can_manage_all(member) and deal.owner_id != user.id:
+        if (
+            not self.org_service.can_manage_all(member)
+            and deal.owner_id != user.id
+        ):
             raise ForbiddenError("You can only update your own deals")
 
         # Validate status change
@@ -152,7 +152,8 @@ class DealService:
         update_data = {
             k: v
             for k, v in kwargs.items()
-            if v is not None and k not in ["owner_id", "organization_id", "contact_id"]
+            if v is not None
+            and k not in ["owner_id", "organization_id", "contact_id"]
         }
 
         old_status = deal.status
@@ -199,7 +200,10 @@ class DealService:
             raise NotFoundError("Deal not found")
 
         # Members can only delete their own deals
-        if not self.org_service.can_manage_all(member) and deal.owner_id != user.id:
+        if (
+            not self.org_service.can_manage_all(member)
+            and deal.owner_id != user.id
+        ):
             raise ForbiddenError("You can only delete your own deals")
 
         await self.repo.delete(deal)

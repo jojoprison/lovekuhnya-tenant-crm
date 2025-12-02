@@ -3,7 +3,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.core.exceptions import (
     ConflictError,
     UnauthorizedError,
-    ValidationError,
 )
 from src.core.security import (
     create_access_token,
@@ -12,7 +11,7 @@ from src.core.security import (
     hash_password,
     verify_password,
 )
-from src.models import Organization, User, UserRole
+from src.models import User, UserRole
 from src.repositories import OrganizationRepository, UserRepository
 
 

@@ -1,9 +1,9 @@
-from typing import Sequence
+from collections.abc import Sequence
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.exceptions import ConflictError, ForbiddenError, NotFoundError
-from src.models import Contact, OrganizationMember, User, UserRole
+from src.models import Contact, User
 from src.repositories import ContactRepository
 from src.services.organization import OrganizationService
 
@@ -95,7 +95,10 @@ class ContactService:
             raise NotFoundError("Contact not found")
 
         # Members can only update their own contacts
-        if not self.org_service.can_manage_all(member) and contact.owner_id != user.id:
+        if (
+            not self.org_service.can_manage_all(member)
+            and contact.owner_id != user.id
+        ):
             raise ForbiddenError("You can only update your own contacts")
 
         # Filter out None values and owner_id (shouldn't be changed)
@@ -121,7 +124,10 @@ class ContactService:
             raise NotFoundError("Contact not found")
 
         # Members can only delete their own contacts
-        if not self.org_service.can_manage_all(member) and contact.owner_id != user.id:
+        if (
+            not self.org_service.can_manage_all(member)
+            and contact.owner_id != user.id
+        ):
             raise ForbiddenError("You can only delete your own contacts")
 
         # Check for existing deals

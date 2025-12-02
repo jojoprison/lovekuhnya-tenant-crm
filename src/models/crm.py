@@ -1,22 +1,26 @@
+from __future__ import annotations
+
 from datetime import datetime
 from decimal import Decimal
-from typing import Any, List, Optional
+from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import (
     JSON,
     Boolean,
     DateTime,
-)
-from sqlalchemy import Enum as SAEnum
-from sqlalchemy import (
     ForeignKey,
     Numeric,
     String,
+    func,
 )
+from sqlalchemy import Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.core.database import Base
 from src.domain.enums import ActivityType, DealStage, DealStatus
+
+if TYPE_CHECKING:
+    from src.models.auth import Organization, User
 
 
 class Contact(Base):
@@ -27,14 +31,15 @@ class Contact(Base):
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
     name: Mapped[str] = mapped_column(String, index=True)
-    email: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    phone: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    email: Mapped[str | None] = mapped_column(String, nullable=True)
+    phone: Mapped[str | None] = mapped_column(String, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
 
-    # Relationships
-    organization: Mapped["Organization"] = relationship(back_populates="contacts")
-    owner: Mapped["User"] = relationship()
-    deals: Mapped[List["Deal"]] = relationship(back_populates="contact")
+    organization: Mapped[Organization] = relationship(back_populates="contacts")
+    owner: Mapped[User] = relationship()
+    deals: Mapped[list[Deal]] = relationship(back_populates="contact")
 
 
 class Deal(Base):
@@ -55,19 +60,20 @@ class Deal(Base):
         SAEnum(DealStage), default=DealStage.QUALIFICATION
     )
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
-    # Relationships
-    organization: Mapped["Organization"] = relationship(back_populates="deals")
-    contact: Mapped["Contact"] = relationship(back_populates="deals")
-    owner: Mapped["User"] = relationship()
-    tasks: Mapped[List["Task"]] = relationship(
+    organization: Mapped[Organization] = relationship(back_populates="deals")
+    contact: Mapped[Contact] = relationship(back_populates="deals")
+    owner: Mapped[User] = relationship()
+    tasks: Mapped[list[Task]] = relationship(
         back_populates="deal", cascade="all, delete-orphan"
     )
-    activities: Mapped[List["Activity"]] = relationship(
+    activities: Mapped[list[Activity]] = relationship(
         back_populates="deal", cascade="all, delete-orphan"
     )
 
@@ -79,13 +85,14 @@ class Task(Base):
     deal_id: Mapped[int] = mapped_column(ForeignKey("deals.id"))
 
     title: Mapped[str] = mapped_column(String)
-    description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
-    due_date: Mapped[datetime] = mapped_column(DateTime)
+    description: Mapped[str | None] = mapped_column(String, nullable=True)
+    due_date: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     is_done: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
 
-    # Relationships
-    deal: Mapped["Deal"] = relationship(back_populates="tasks")
+    deal: Mapped[Deal] = relationship(back_populates="tasks")
 
 
 class Activity(Base):
@@ -93,14 +100,15 @@ class Activity(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     deal_id: Mapped[int] = mapped_column(ForeignKey("deals.id"))
-    author_id: Mapped[Optional[int]] = mapped_column(
+    author_id: Mapped[int | None] = mapped_column(
         ForeignKey("users.id"), nullable=True
     )
 
     type: Mapped[ActivityType] = mapped_column(SAEnum(ActivityType))
     payload: Mapped[dict[str, Any]] = mapped_column(JSON, default={})
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
 
-    # Relationships
-    deal: Mapped["Deal"] = relationship(back_populates="activities")
-    author: Mapped["User"] = relationship()
+    deal: Mapped[Deal] = relationship(back_populates="activities")
+    author: Mapped[User] = relationship()

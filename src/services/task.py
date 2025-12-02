@@ -1,5 +1,6 @@
-from datetime import date, datetime
-from typing import Sequence
+from collections.abc import Sequence
+from datetime import datetime
+from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -18,8 +19,7 @@ class TaskService:
         task_repo: TaskRepositoryProtocol | None = None,
     ) -> None:
         self.session = session
-        # Application depends on the port; concrete repo is wired by default.
-        self.repo: TaskRepositoryProtocol = task_repo or TaskRepository(session)
+        self.repo = task_repo or TaskRepository(session)
         self.deal_repo = DealRepository(session)
         self.activity_repo = ActivityRepository(session)
         self.org_service = OrganizationService(session)
@@ -45,7 +45,10 @@ class TaskService:
                 raise NotFoundError("Deal not found")
 
             return await self.repo.get_by_deal(
-                deal_id, only_open=only_open, due_before=due_before, due_after=due_after
+                deal_id,
+                only_open=only_open,
+                due_before=due_before,
+                due_after=due_after,
             )
 
         skip = (page - 1) * page_size
@@ -150,7 +153,7 @@ class TaskService:
         if due_date is not None:
             ensure_due_date_not_in_past(due_date)
 
-        update_data = {}
+        update_data: dict[str, Any] = {}
         if title is not None:
             update_data["title"] = title
         if description is not None:

@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from functools import lru_cache
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -88,7 +87,9 @@ class AnalyticsService:
         """Get value from cache if not expired."""
         if key in _cache:
             cached_at, value = _cache[key]
-            if datetime.utcnow() - cached_at < timedelta(seconds=CACHE_TTL_SECONDS):
+            if datetime.utcnow() - cached_at < timedelta(
+                seconds=CACHE_TTL_SECONDS
+            ):
                 return value
             del _cache[key]
         return None
@@ -105,7 +106,8 @@ class AnalyticsService:
             keys_to_delete = [
                 k
                 for k in _cache
-                if f"_{organization_id}_" in k or k.endswith(f"_{organization_id}")
+                if f"_{organization_id}_" in k
+                or k.endswith(f"_{organization_id}")
             ]
             for k in keys_to_delete:
                 del _cache[k]

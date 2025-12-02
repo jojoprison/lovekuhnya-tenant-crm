@@ -32,12 +32,16 @@ async def get_activities(
             page=page,
             page_size=page_size,
         )
-        return ActivityListResponse(items=activities)
+        return ActivityListResponse(items=activities)  # type: ignore[arg-type]
     except NotFoundError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=e.message
+        )
 
 
-@router.post("", response_model=ActivityResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "", response_model=ActivityResponse, status_code=status.HTTP_201_CREATED
+)
 async def create_activity(
     deal_id: int,
     data: CreateCommentRequest,
@@ -55,7 +59,8 @@ async def create_activity(
     text = data.payload.get("text", "")
     if not text:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Comment text is required"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Comment text is required",
         )
 
     try:
@@ -67,6 +72,10 @@ async def create_activity(
             text=text,
         )
     except NotFoundError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=e.message
+        )
     except ValidationError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=e.message)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=e.message
+        )

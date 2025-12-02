@@ -1,9 +1,10 @@
 from datetime import datetime
 from decimal import Decimal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
-from src.models.enums import DealStage, DealStatus
+from src.domain.enums import DealStage, DealStatus
+from src.schemas.common import PaginatedResponse
 
 
 class DealBase(BaseModel):
@@ -37,8 +38,4 @@ class DealResponse(DealBase):
     model_config = {"from_attributes": True}
 
 
-class DealListResponse(BaseModel):
-    items: list[DealResponse]
-    total: int
-    page: int
-    page_size: int
+DealListResponse = PaginatedResponse[DealResponse]

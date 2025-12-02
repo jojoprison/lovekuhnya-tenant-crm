@@ -1,7 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter
 
 from src.api.deps import CurrentUser, DbSession
-from src.core.exceptions import ForbiddenError, NotFoundError, ValidationError
 from src.schemas import OrganizationResponse
 from src.services import OrganizationService
 

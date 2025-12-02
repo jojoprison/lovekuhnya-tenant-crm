@@ -1,8 +1,7 @@
-from typing import Sequence
+from collections.abc import Sequence
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from src.models import Organization, OrganizationMember, UserRole
 from src.repositories.base import BaseRepository
@@ -12,7 +11,9 @@ class OrganizationRepository(BaseRepository[Organization]):
     def __init__(self, session: AsyncSession):
         super().__init__(Organization, session)
 
-    async def get_user_organizations(self, user_id: int) -> Sequence[Organization]:
+    async def get_user_organizations(
+        self, user_id: int
+    ) -> Sequence[Organization]:
         """Get all organizations where user is a member."""
         stmt = (
             select(Organization)

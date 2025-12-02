@@ -2,6 +2,8 @@ from datetime import datetime
 
 from pydantic import BaseModel, EmailStr
 
+from src.schemas.common import PaginatedResponse
+
 
 class ContactBase(BaseModel):
     name: str
@@ -28,8 +30,4 @@ class ContactResponse(ContactBase):
     model_config = {"from_attributes": True}
 
 
-class ContactListResponse(BaseModel):
-    items: list[ContactResponse]
-    total: int
-    page: int
-    page_size: int
+ContactListResponse = PaginatedResponse[ContactResponse]

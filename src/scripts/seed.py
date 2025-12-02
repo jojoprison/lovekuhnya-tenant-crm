@@ -3,7 +3,7 @@ import logging
 from decimal import Decimal
 
 from src.core.database import AsyncSessionLocal
-from src.models.enums import DealStage, DealStatus
+from src.models.enums import DealStage
 from src.services import AuthService, ContactService, DealService
 
 logging.basicConfig(level=logging.INFO)
@@ -28,7 +28,9 @@ async def seed_data():
             )
             user = result["user"]
             org = result["organization"]
-            logger.info(f"Created user: {user.email}, Org: {org.name} (ID: {org.id})")
+            logger.info(
+                f"Created user: {user.email}, Org: {org.name} (ID: {org.id})"
+            )
 
             # 2. Create Contacts
             logger.info("Creating contacts...")
@@ -73,7 +75,7 @@ async def seed_data():
             )
 
             logger.info("Seeding complete! 🚀")
-            logger.info(f"Login with: admin@example.com / admin")
+            logger.info("Login with: admin@example.com / admin")
             logger.info(f"Organization ID: {org.id}")
 
         except Exception as e:

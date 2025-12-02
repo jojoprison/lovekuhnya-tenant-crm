@@ -13,7 +13,7 @@ from src.schemas.auth import (
     UserCreate,
     UserResponse,
 )
-from src.schemas.common import ErrorResponse, MessageResponse
+from src.schemas.common import ErrorResponse, MessageResponse, PaginatedResponse
 from src.schemas.contact import (
     ContactCreate,
     ContactListResponse,
