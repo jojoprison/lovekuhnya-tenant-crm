@@ -1,11 +1,14 @@
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, Query, status
 
-from src.api.deps import DbSession, CurrentUser, OrgId
-from src.core.exceptions import NotFoundError, ForbiddenError, ConflictError
-from src.services import ContactService
+from src.api.deps import CurrentUser, DbSession, OrgId
+from src.core.exceptions import ConflictError, ForbiddenError, NotFoundError
 from src.schemas import (
-    ContactCreate, ContactUpdate, ContactResponse, ContactListResponse
+    ContactCreate,
+    ContactListResponse,
+    ContactResponse,
+    ContactUpdate,
 )
+from src.services import ContactService
 
 router = APIRouter(prefix="/contacts", tags=["Contacts"])
 

@@ -3,16 +3,22 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.database import get_db
 from src.core.exceptions import ConflictError, UnauthorizedError
-from src.services import AuthService
 from src.schemas import (
-    UserCreate, LoginRequest, RefreshRequest,
-    RegisterResponse, LoginResponse, TokenResponse
+    LoginRequest,
+    LoginResponse,
+    RefreshRequest,
+    RegisterResponse,
+    TokenResponse,
+    UserCreate,
 )
+from src.services import AuthService
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
-@router.post("/register", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/register", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED
+)
 async def register(
     data: UserCreate,
     db: AsyncSession = Depends(get_db),

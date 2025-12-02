@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from src.api.deps import DbSession, CurrentUser
-from src.core.exceptions import NotFoundError, ForbiddenError, ValidationError
-from src.services import OrganizationService
+from src.api.deps import CurrentUser, DbSession
+from src.core.exceptions import ForbiddenError, NotFoundError, ValidationError
 from src.schemas import OrganizationResponse
+from src.services import OrganizationService
 
 router = APIRouter(prefix="/organizations", tags=["Organizations"])
 

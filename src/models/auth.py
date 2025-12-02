@@ -1,9 +1,14 @@
 from datetime import datetime
 from typing import List, Optional
-from sqlalchemy import ForeignKey, String, DateTime, UniqueConstraint, Enum as SAEnum
+
+from sqlalchemy import DateTime
+from sqlalchemy import Enum as SAEnum
+from sqlalchemy import ForeignKey, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from src.core.database import Base
 from src.domain.enums import UserRole
+
 
 class User(Base):
     __tablename__ = "users"
@@ -15,7 +20,9 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     # Relationships
-    memberships: Mapped[List["OrganizationMember"]] = relationship(back_populates="user")
+    memberships: Mapped[List["OrganizationMember"]] = relationship(
+        back_populates="user"
+    )
 
 
 class Organization(Base):
@@ -26,7 +33,9 @@ class Organization(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     # Relationships
-    members: Mapped[List["OrganizationMember"]] = relationship(back_populates="organization", cascade="all, delete-orphan")
+    members: Mapped[List["OrganizationMember"]] = relationship(
+        back_populates="organization", cascade="all, delete-orphan"
+    )
     contacts: Mapped[List["Contact"]] = relationship(back_populates="organization")
     deals: Mapped[List["Deal"]] = relationship(back_populates="organization")
 
@@ -34,7 +43,7 @@ class Organization(Base):
 class OrganizationMember(Base):
     __tablename__ = "organization_members"
     __table_args__ = (
-        UniqueConstraint('organization_id', 'user_id', name='uq_org_user'),
+        UniqueConstraint("organization_id", "user_id", name="uq_org_user"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)

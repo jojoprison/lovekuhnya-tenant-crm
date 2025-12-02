@@ -3,11 +3,12 @@ import logging
 from decimal import Decimal
 
 from src.core.database import AsyncSessionLocal
+from src.models.enums import DealStage, DealStatus
 from src.services import AuthService, ContactService, DealService
-from src.models.enums import DealStatus, DealStage
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 async def seed_data():
     """Seed database with initial data."""
@@ -36,13 +37,13 @@ async def seed_data():
                 user=user,
                 name="Alice Smith",
                 email="alice@example.com",
-                phone="+123456789"
+                phone="+123456789",
             )
             c2 = await contact_service.create_contact(
                 organization_id=org.id,
                 user=user,
                 name="Bob Jones",
-                email="bob@example.com"
+                email="bob@example.com",
             )
 
             # 3. Create Deals
@@ -53,9 +54,9 @@ async def seed_data():
                 contact_id=c1.id,
                 title="Big Enterprise Contract",
                 amount=Decimal("50000.00"),
-                currency="USD"
+                currency="USD",
             )
-            
+
             d2 = await deal_service.create_deal(
                 organization_id=org.id,
                 user=user,
@@ -68,7 +69,7 @@ async def seed_data():
                 deal_id=d2.id,
                 organization_id=org.id,
                 user=user,
-                stage=DealStage.NEGOTIATION
+                stage=DealStage.NEGOTIATION,
             )
 
             logger.info("Seeding complete! 🚀")
@@ -77,6 +78,7 @@ async def seed_data():
 
         except Exception as e:
             logger.error(f"Seeding failed (maybe already seeded?): {e}")
+
 
 if __name__ == "__main__":
     asyncio.run(seed_data())

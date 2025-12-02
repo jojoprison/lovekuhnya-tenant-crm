@@ -1,5 +1,6 @@
-from typing import Generic, TypeVar, Type, Sequence
-from sqlalchemy import select, func
+from typing import Generic, Sequence, Type, TypeVar
+
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.database import Base

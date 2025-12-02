@@ -1,6 +1,7 @@
-from typing import Sequence
 from datetime import datetime
-from sqlalchemy import select, func
+from typing import Sequence
+
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.models import Task
@@ -46,11 +47,7 @@ class TaskRepository(BaseRepository[Task]):
         """Get all tasks for organization (via deals)."""
         from src.models import Deal
 
-        stmt = (
-            select(Task)
-            .join(Deal)
-            .where(Deal.organization_id == organization_id)
-        )
+        stmt = select(Task).join(Deal).where(Deal.organization_id == organization_id)
 
         if only_open:
             stmt = stmt.where(Task.is_done == False)

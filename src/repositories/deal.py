@@ -1,10 +1,11 @@
-from typing import Sequence
-from decimal import Decimal
-from sqlalchemy import select, func, case
-from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta
+from decimal import Decimal
+from typing import Sequence
 
-from src.models import Deal, DealStatus, DealStage
+from sqlalchemy import case, func, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from src.models import Deal, DealStage, DealStatus
 from src.repositories.base import BaseRepository
 
 
@@ -62,8 +63,10 @@ class DealRepository(BaseRepository[Deal]):
         owner_id: int | None = None,
     ) -> int:
         """Count deals for organization with optional filters."""
-        stmt = select(func.count()).select_from(Deal).where(
-            Deal.organization_id == organization_id
+        stmt = (
+            select(func.count())
+            .select_from(Deal)
+            .where(Deal.organization_id == organization_id)
         )
 
         if status:
@@ -91,7 +94,13 @@ class DealRepository(BaseRepository[Deal]):
             .group_by(Deal.status)
         )
         result = await self.session.execute(stmt)
-        by_status = {row.status: {"count": row.count, "total_amount": row.total_amount or Decimal(0)} for row in result}
+        by_status = {
+            row.status: {
+                "count": row.count,
+                "total_amount": row.total_amount or Decimal(0),
+            }
+            for row in result
+        }
 
         # Average amount for won deals
         stmt_avg = select(func.avg(Deal.amount)).where(
@@ -103,9 +112,13 @@ class DealRepository(BaseRepository[Deal]):
 
         # New deals in last N days
         cutoff_date = datetime.utcnow() - timedelta(days=days)
-        stmt_new = select(func.count()).select_from(Deal).where(
-            Deal.organization_id == organization_id,
-            Deal.created_at >= cutoff_date,
+        stmt_new = (
+            select(func.count())
+            .select_from(Deal)
+            .where(
+                Deal.organization_id == organization_id,
+                Deal.created_at >= cutoff_date,
+            )
         )
         new_result = await self.session.execute(stmt_new)
         new_count = new_result.scalar() or 0
@@ -145,7 +158,9 @@ class DealRepository(BaseRepository[Deal]):
             prev_total = funnel.get(prev_stage, {}).get("total", 0)
             curr_total = funnel.get(stage, {}).get("total", 0)
             if prev_total > 0:
-                funnel.setdefault(stage, {})["conversion_from_prev"] = round(curr_total / prev_total * 100, 2)
+                funnel.setdefault(stage, {})["conversion_from_prev"] = round(
+                    curr_total / prev_total * 100, 2
+                )
             else:
                 funnel.setdefault(stage, {})["conversion_from_prev"] = 0
 

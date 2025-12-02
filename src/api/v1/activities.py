@@ -1,10 +1,14 @@
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, Query, status
 
-from src.api.deps import DbSession, CurrentUser, OrgId
+from src.api.deps import CurrentUser, DbSession, OrgId
 from src.core.exceptions import NotFoundError, ValidationError
-from src.services import ActivityService
-from src.schemas import ActivityResponse, ActivityListResponse, CreateCommentRequest
 from src.models.enums import ActivityType
+from src.schemas import (
+    ActivityListResponse,
+    ActivityResponse,
+    CreateCommentRequest,
+)
+from src.services import ActivityService
 
 router = APIRouter(prefix="/deals/{deal_id}/activities", tags=["Activities"])
 
@@ -45,14 +49,13 @@ async def create_activity(
     if data.type != ActivityType.COMMENT:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Only comment activities can be created directly"
+            detail="Only comment activities can be created directly",
         )
 
     text = data.payload.get("text", "")
     if not text:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Comment text is required"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Comment text is required"
         )
 
     try:

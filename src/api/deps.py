@@ -1,12 +1,13 @@
 from typing import Annotated
+
 from fastapi import Depends, Header, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.database import get_db
-from src.core.exceptions import UnauthorizedError, ForbiddenError
+from src.core.exceptions import ForbiddenError, UnauthorizedError
+from src.models import OrganizationMember, User
 from src.services import AuthService, OrganizationService
-from src.models import User, OrganizationMember
 
 security = HTTPBearer()
 

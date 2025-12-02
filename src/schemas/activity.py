@@ -1,6 +1,8 @@
-from pydantic import BaseModel
 from datetime import datetime
 from typing import Any
+
+from pydantic import BaseModel
+
 from src.models.enums import ActivityType
 
 

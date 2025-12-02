@@ -1,5 +1,6 @@
 from typing import Sequence
-from sqlalchemy import select, or_, func
+
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.models import Contact
@@ -44,8 +45,10 @@ class ContactRepository(BaseRepository[Contact]):
         owner_id: int | None = None,
     ) -> int:
         """Count contacts for organization with optional filters."""
-        stmt = select(func.count()).select_from(Contact).where(
-            Contact.organization_id == organization_id
+        stmt = (
+            select(func.count())
+            .select_from(Contact)
+            .where(Contact.organization_id == organization_id)
         )
 
         if search:
@@ -67,6 +70,8 @@ class ContactRepository(BaseRepository[Contact]):
         """Check if contact has any deals (for deletion validation)."""
         from src.models import Deal
 
-        stmt = select(func.count()).select_from(Deal).where(Deal.contact_id == contact_id)
+        stmt = (
+            select(func.count()).select_from(Deal).where(Deal.contact_id == contact_id)
+        )
         result = await self.session.execute(stmt)
         return (result.scalar() or 0) > 0

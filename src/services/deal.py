@@ -1,18 +1,23 @@
-from typing import Sequence
 from decimal import Decimal
+from typing import Sequence
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.exceptions import NotFoundError, ForbiddenError
-from src.repositories import DealRepository, ContactRepository, ActivityRepository
-from src.models import Deal, User
 from src.application.ports import DealRepositoryProtocol
+from src.core.exceptions import ForbiddenError, NotFoundError
 from src.domain import (
-    DealStatus,
-    DealStage,
-    UserRole,
     STAGE_ORDER,
-    ensure_status_change_is_valid,
+    DealStage,
+    DealStatus,
+    UserRole,
     ensure_stage_change_is_valid,
+    ensure_status_change_is_valid,
+)
+from src.models import Deal, User
+from src.repositories import (
+    ActivityRepository,
+    ContactRepository,
+    DealRepository,
 )
 from src.services.organization import OrganizationService
 
@@ -144,8 +149,12 @@ class DealService:
             ensure_stage_change_is_valid(deal, stage, member)
 
         # Build update data
-        update_data = {k: v for k, v in kwargs.items() if v is not None and k not in ["owner_id", "organization_id", "contact_id"]}
-        
+        update_data = {
+            k: v
+            for k, v in kwargs.items()
+            if v is not None and k not in ["owner_id", "organization_id", "contact_id"]
+        }
+
         old_status = deal.status
         old_stage = deal.stage
 
@@ -195,4 +204,3 @@ class DealService:
 
         await self.repo.delete(deal)
         await self.session.commit()
-

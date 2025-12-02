@@ -1,10 +1,11 @@
 from typing import Sequence
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.exceptions import NotFoundError, ForbiddenError, ValidationError
-from src.repositories import OrganizationRepository
-from src.models import Organization, OrganizationMember, User
+from src.core.exceptions import ForbiddenError, NotFoundError, ValidationError
 from src.domain import UserRole, can_manage_all, can_modify_settings
+from src.models import Organization, OrganizationMember, User
+from src.repositories import OrganizationRepository
 
 
 class OrganizationService:
@@ -78,7 +79,9 @@ class OrganizationService:
 
         # Only owner can change to/from owner role
         if member.role == UserRole.OWNER or new_role == UserRole.OWNER:
-            current_member = await self.repo.get_member(organization_id, current_user.id)
+            current_member = await self.repo.get_member(
+                organization_id, current_user.id
+            )
             if current_member.role != UserRole.OWNER:
                 raise ForbiddenError("Only owner can change owner role")
 

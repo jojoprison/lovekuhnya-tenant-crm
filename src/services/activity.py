@@ -1,9 +1,10 @@
 from typing import Sequence
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.exceptions import NotFoundError, ValidationError
+from src.models import Activity, ActivityType, User
 from src.repositories import ActivityRepository, DealRepository
-from src.models import Activity, User, ActivityType
 from src.services.organization import OrganizationService
 
 

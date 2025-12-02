@@ -1,12 +1,13 @@
+from datetime import date, datetime
 from typing import Sequence
-from datetime import datetime, date
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.exceptions import NotFoundError, ForbiddenError
-from src.repositories import TaskRepository, DealRepository, ActivityRepository
-from src.models import Task, User, UserRole
-from src.domain import ensure_due_date_not_in_past
 from src.application.ports import TaskRepositoryProtocol
+from src.core.exceptions import ForbiddenError, NotFoundError
+from src.domain import ensure_due_date_not_in_past
+from src.models import Task, User, UserRole
+from src.repositories import ActivityRepository, DealRepository, TaskRepository
 from src.services.organization import OrganizationService
 
 

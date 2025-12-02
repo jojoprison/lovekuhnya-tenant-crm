@@ -1,11 +1,11 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from functools import lru_cache
 from datetime import datetime, timedelta
+from functools import lru_cache
 
-from src.repositories import DealRepository
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.models import User
+from src.repositories import DealRepository
 from src.services.organization import OrganizationService
-
 
 # Simple in-memory cache for analytics
 _cache: dict[str, tuple[datetime, dict]] = {}
@@ -37,7 +37,7 @@ class AnalyticsService:
         # Format response
         result = {
             "by_status": {
-                status.value if hasattr(status, 'value') else status: {
+                status.value if hasattr(status, "value") else status: {
                     "count": data["count"],
                     "total_amount": float(data["total_amount"]),
                 }
@@ -69,10 +69,10 @@ class AnalyticsService:
         # Format response
         result = {
             "stages": {
-                stage.value if hasattr(stage, 'value') else stage: {
+                stage.value if hasattr(stage, "value") else stage: {
                     "total": data.get("total", 0),
                     "by_status": {
-                        s.value if hasattr(s, 'value') else s: c
+                        s.value if hasattr(s, "value") else s: c
                         for s, c in data.get("by_status", {}).items()
                     },
                     "conversion_from_prev": data.get("conversion_from_prev", 0),
@@ -102,7 +102,11 @@ class AnalyticsService:
         """Clear cache for organization or all."""
         global _cache
         if organization_id:
-            keys_to_delete = [k for k in _cache if f"_{organization_id}_" in k or k.endswith(f"_{organization_id}")]
+            keys_to_delete = [
+                k
+                for k in _cache
+                if f"_{organization_id}_" in k or k.endswith(f"_{organization_id}")
+            ]
             for k in keys_to_delete:
                 del _cache[k]
         else:

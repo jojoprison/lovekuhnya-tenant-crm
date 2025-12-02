@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Query
 
-from src.api.deps import DbSession, CurrentUser, OrgId
+from src.api.deps import CurrentUser, DbSession, OrgId
+from src.schemas import DealsFunnelResponse, DealsSummaryResponse
 from src.services import AnalyticsService
-from src.schemas import DealsSummaryResponse, DealsFunnelResponse
 
 router = APIRouter(prefix="/analytics", tags=["Analytics"])
 

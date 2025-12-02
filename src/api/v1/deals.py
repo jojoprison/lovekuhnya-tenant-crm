@@ -1,11 +1,12 @@
-from fastapi import APIRouter, HTTPException, status, Query
 from decimal import Decimal
 
-from src.api.deps import DbSession, CurrentUser, OrgId
-from src.core.exceptions import NotFoundError, ForbiddenError, ValidationError
+from fastapi import APIRouter, HTTPException, Query, status
+
+from src.api.deps import CurrentUser, DbSession, OrgId
+from src.core.exceptions import ForbiddenError, NotFoundError, ValidationError
+from src.models.enums import DealStage, DealStatus
+from src.schemas import DealCreate, DealListResponse, DealResponse, DealUpdate
 from src.services import DealService
-from src.models.enums import DealStatus, DealStage
-from src.schemas import DealCreate, DealUpdate, DealResponse, DealListResponse
 
 router = APIRouter(prefix="/deals", tags=["Deals"])
 

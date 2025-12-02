@@ -1,6 +1,14 @@
 from fastapi import APIRouter
 
-from src.api.v1 import auth, organizations, contacts, deals, tasks, activities, analytics
+from src.api.v1 import (
+    activities,
+    analytics,
+    auth,
+    contacts,
+    deals,
+    organizations,
+    tasks,
+)
 
 router = APIRouter(prefix="/api/v1")
 

@@ -1,9 +1,10 @@
 from typing import Sequence
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.exceptions import NotFoundError, ForbiddenError, ConflictError
+from src.core.exceptions import ConflictError, ForbiddenError, NotFoundError
+from src.models import Contact, OrganizationMember, User, UserRole
 from src.repositories import ContactRepository
-from src.models import Contact, User, OrganizationMember, UserRole
 from src.services.organization import OrganizationService
 
 
@@ -98,7 +99,9 @@ class ContactService:
             raise ForbiddenError("You can only update your own contacts")
 
         # Filter out None values and owner_id (shouldn't be changed)
-        update_data = {k: v for k, v in kwargs.items() if v is not None and k != "owner_id"}
+        update_data = {
+            k: v for k, v in kwargs.items() if v is not None and k != "owner_id"
+        }
 
         contact = await self.repo.update(contact, **update_data)
         await self.session.commit()

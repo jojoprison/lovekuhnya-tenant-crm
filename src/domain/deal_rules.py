@@ -5,8 +5,8 @@ from __future__ import annotations
 from decimal import Decimal
 from typing import TYPE_CHECKING, Sequence
 
-from src.core.exceptions import ValidationError, ForbiddenError
-from src.domain.enums import DealStatus, DealStage, UserRole
+from src.core.exceptions import ForbiddenError, ValidationError
+from src.domain.enums import DealStage, DealStatus, UserRole
 
 if TYPE_CHECKING:
     from src.models import Deal, OrganizationMember

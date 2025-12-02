@@ -5,8 +5,8 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from src.infrastructure import settings
 from src.core.exceptions import AppException
+from src.infrastructure import settings
 from src.interface import router as api_router
 
 # Configure logging
