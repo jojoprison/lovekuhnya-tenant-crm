@@ -21,7 +21,6 @@ COPY src/ ./src/
 COPY tests/ ./tests/
 COPY alembic/ ./alembic/
 COPY alembic.ini ./
-COPY pytest.ini ./
 COPY entrypoint.sh ./
 
 RUN chmod +x entrypoint.sh

@@ -74,10 +74,21 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+addopts = "-v --tb=short"
+filterwarnings = ["ignore::DeprecationWarning"]
 
 [tool.coverage.run]
 source = ["src"]
-omit = ["src/__init__.py", "alembic/*"]
+omit = ["src/__init__.py", "src/scripts/*", "alembic/*"]
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "@abstractmethod",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
