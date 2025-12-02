@@ -16,7 +16,7 @@ help:
 	@echo "  database:"
 	@echo "    make migrate     - run migrations (in container)"
 	@echo "    make migrate-new - create migration (MSG=description)"
-	@echo "    make seed        - seed demo data"
+	@echo "    make demo        - load demo data (optional)"
 	@echo ""
 	@echo "  tests:"
 	@echo "    make test        - run tests"
@@ -55,7 +55,7 @@ migrate:
 migrate-new:
 	docker-compose exec app uv run alembic revision --autogenerate -m "$(MSG)"
 
-seed:
+demo:
 	docker-compose exec app uv run python -m src.scripts.seed
 
 
