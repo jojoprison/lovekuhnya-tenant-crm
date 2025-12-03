@@ -16,16 +16,39 @@
 
 ```bash
 cp .env.example .env
-make upb                        # сборка и запуск
-make smoke                      # проверка API (24 теста)
+```
+
+```bash
+make upb
+```
+
+```bash
+make smoke
 ```
 
 - **Admin:** http://localhost:8007/admin
 - **API Docs:** http://localhost:8007/docs
 
+Опционально — демо-данные (логин: `admin@example.com` / `admin`):
+
 ```bash
-# Опционально: демо-данные
-make demo                       # логин: admin@example.com / admin
+make demo
+```
+
+### Для разработки
+
+Локальные линтеры и pre-commit хуки требуют установки зависимостей:
+
+```bash
+make install
+```
+
+После этого доступны:
+
+```bash
+make lint
+make lint-fix
+make pre-commit
 ```
 
 ### Команды
@@ -112,16 +135,39 @@ Multi-tenant CRM backend with role-based access control and analytics.
 
 ```bash
 cp .env.example .env
-make upb                        # build and start
-make smoke                      # verify API (24 tests)
+```
+
+```bash
+make upb
+```
+
+```bash
+make smoke
 ```
 
 - **Admin:** http://localhost:8007/admin
 - **API Docs:** http://localhost:8007/docs
 
+Optional — demo data (login: `admin@example.com` / `admin`):
+
 ```bash
-# Optional: demo data
-make demo                       # login: admin@example.com / admin
+make demo
+```
+
+### For Development
+
+Local linters and pre-commit hooks require installing dependencies:
+
+```bash
+make install
+```
+
+After that, the following are available:
+
+```bash
+make lint
+make lint-fix
+make pre-commit
 ```
 
 ### Commands
