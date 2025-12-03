@@ -1,7 +1,9 @@
 .PHONY: install up upb down b migrate migrate-new demo test test-cov smoke lint lint-fix clean help pre-commit
 
+.DEFAULT_GOAL := help
+
 help:
-	@echo "commands"
+	@echo "LoveKuhnya Tenant CRM v1.0.0"
 	@echo ""
 	@echo "  setup:"
 	@echo "    make install     - install dependencies (creates .venv)"
