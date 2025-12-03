@@ -1,14 +1,11 @@
-from datetime import datetime, timedelta
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.core import cache
 from src.models import User
 from src.repositories import DealRepository
 from src.services.organization import OrganizationService
 
-# Simple in-memory cache for analytics
-_cache: dict[str, tuple[datetime, dict]] = {}
-CACHE_TTL_SECONDS = 60  # Cache for 60 seconds
+CACHE_TTL = 60  # seconds
 
 
 class AnalyticsService:
@@ -26,14 +23,12 @@ class AnalyticsService:
         """Get deals summary analytics with caching."""
         await self.org_service.get_membership(organization_id, user)
 
-        cache_key = f"summary_{organization_id}_{days}"
-        cached = self._get_cached(cache_key)
-        if cached:
+        cache_key = f"analytics:summary:{organization_id}:{days}"
+        if cached := cache.get(cache_key):
             return cached
 
         summary = await self.deal_repo.get_summary(organization_id, days=days)
 
-        # Format response
         result = {
             "by_status": {
                 status.value if hasattr(status, "value") else status: {
@@ -47,7 +42,7 @@ class AnalyticsService:
             "days": summary["days"],
         }
 
-        self._set_cached(cache_key, result)
+        cache.set(cache_key, result, CACHE_TTL)
         return result
 
     async def get_deals_funnel(
@@ -58,14 +53,12 @@ class AnalyticsService:
         """Get sales funnel analytics with caching."""
         await self.org_service.get_membership(organization_id, user)
 
-        cache_key = f"funnel_{organization_id}"
-        cached = self._get_cached(cache_key)
-        if cached:
+        cache_key = f"analytics:funnel:{organization_id}"
+        if cached := cache.get(cache_key):
             return cached
 
         funnel_data = await self.deal_repo.get_funnel(organization_id)
 
-        # Format response
         result = {
             "stages": {
                 stage.value if hasattr(stage, "value") else stage: {
@@ -80,36 +73,5 @@ class AnalyticsService:
             }
         }
 
-        self._set_cached(cache_key, result)
+        cache.set(cache_key, result, CACHE_TTL)
         return result
-
-    def _get_cached(self, key: str) -> dict | None:
-        """Get value from cache if not expired."""
-        if key in _cache:
-            cached_at, value = _cache[key]
-            if datetime.utcnow() - cached_at < timedelta(
-                seconds=CACHE_TTL_SECONDS
-            ):
-                return value
-            del _cache[key]
-        return None
-
-    def _set_cached(self, key: str, value: dict) -> None:
-        """Set value in cache."""
-        _cache[key] = (datetime.utcnow(), value)
-
-    @staticmethod
-    def clear_cache(organization_id: int | None = None) -> None:
-        """Clear cache for organization or all."""
-        global _cache
-        if organization_id:
-            keys_to_delete = [
-                k
-                for k in _cache
-                if f"_{organization_id}_" in k
-                or k.endswith(f"_{organization_id}")
-            ]
-            for k in keys_to_delete:
-                del _cache[k]
-        else:
-            _cache = {}

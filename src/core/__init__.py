@@ -1,3 +1,4 @@
+from src.core import cache
 from src.core.config import settings
 from src.core.database import AsyncSessionLocal, Base, get_db
 from src.core.exceptions import (
