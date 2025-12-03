@@ -40,8 +40,16 @@ make demo                       # логин: admin@example.com / admin
 | `make demo`     | Демо-данные (опционально)   |
 | `make test`     | Запустить тесты             |
 | `make smoke`    | Smoke-тест API (curl)       |
-| `make lint`     | Проверка кода (CI)          |
-| `make lint-fix` | Автоисправление             |
+| `make lint`      | Проверка кода (CI)          |
+| `make lint-fix`  | Автоисправление             |
+| `make pre-commit`| Установить git hooks        |
+
+### Особенности
+
+- **In-memory кэш** аналитики с TTL (60 сек)
+- **Health check** с версией, uptime, статусом БД
+- **Pre-commit hooks** (ruff + mypy)
+- **Type hints** везде + mypy strict
 
 ### Архитектура
 
@@ -128,8 +136,16 @@ make demo                       # login: admin@example.com / admin
 | `make demo`     | Demo data (optional)  |
 | `make test`     | Run tests             |
 | `make smoke`    | API smoke test (curl) |
-| `make lint`     | Check code (CI)       |
-| `make lint-fix` | Auto-fix code         |
+| `make lint`      | Check code (CI)       |
+| `make lint-fix`  | Auto-fix code         |
+| `make pre-commit`| Install git hooks     |
+
+### Features
+
+- **In-memory cache** for analytics with TTL (60 sec)
+- **Health check** with version, uptime, DB status
+- **Pre-commit hooks** (ruff + mypy)
+- **Type hints** everywhere + mypy strict
 
 ### Architecture
 
