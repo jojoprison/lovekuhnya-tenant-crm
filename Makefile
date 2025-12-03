@@ -1,10 +1,11 @@
-.PHONY: install up upb down b migrate migrate-new demo test test-cov smoke lint lint-fix clean help
+.PHONY: install up upb down b migrate migrate-new demo test test-cov smoke lint lint-fix clean help pre-commit
 
 help:
 	@echo "commands"
 	@echo ""
 	@echo "  setup:"
 	@echo "    make install     - install dependencies (creates .venv)"
+	@echo "    make pre-commit  - install pre-commit hooks"
 	@echo ""
 	@echo "  docker:"
 	@echo "    make up          - start all services"
@@ -31,6 +32,10 @@ help:
 # creates .venv automatically
 install:
 	uv sync
+
+pre-commit:
+	uv run pre-commit install
+	uv run pre-commit run --all-files
 
 
 up:
