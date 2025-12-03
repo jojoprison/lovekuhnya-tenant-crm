@@ -1,27 +1,34 @@
 import logging
+import time
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from sqlalchemy import text
 
 from src.admin import setup_admin
+from src.core.database import AsyncSessionLocal
 from src.core.exceptions import AppException
 from src.infrastructure import settings
 from src.interface import router as api_router
 
-# Configure logging
+__version__ = "1.0.0"
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
+_start_time: float = 0
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Application lifespan events."""
-    logger.info("Starting LoveKuhnya Tenant CRM API...")
+    global _start_time
+    _start_time = time.time()
+    logger.info("Starting LoveKuhnya Tenant CRM API v%s...", __version__)
     yield
     logger.info("Shutting down LoveKuhnya Tenant CRM API...")
 
@@ -34,7 +41,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Configure for production
@@ -60,4 +66,19 @@ setup_admin(app)
 
 @app.get("/health")
 async def health_check():
-    return {"status": "ok"}
+    db_status = "ok"
+
+    try:
+        async with AsyncSessionLocal() as session:
+            await session.execute(text("SELECT 1"))
+    except Exception:
+        db_status = "error"
+
+    uptime = int(time.time() - _start_time) if _start_time else 0
+
+    return {
+        "status": "ok" if db_status == "ok" else "degraded",
+        "version": __version__,
+        "uptime_seconds": uptime,
+        "database": db_status,
+    }
