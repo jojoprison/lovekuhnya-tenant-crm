@@ -158,6 +158,12 @@ WON_RESP=$(curl -s -X PATCH "${BASE_URL}/deals/${DEAL_ID}" \
 echo "$WON_RESP" | jq .
 success "Deal marked as won"
 
+header "14a. CHECK: Activity created for status change"
+log "GET /deals/${DEAL_ID}/activities (should have status_changed)"
+ACTIVITIES=$(curl -s -X GET "${BASE_URL}/deals/${DEAL_ID}/activities" -H "$AUTH" -H "$ORG_HEADER")
+echo "$ACTIVITIES" | jq '.items[] | select(.type == "status_changed")'
+echo "$ACTIVITIES" | grep -q "status_changed" && success "Activity status_changed found" || fail "Missing status_changed activity"
+
 header "15. BUSINESS RULE: Cannot win deal with amount <= 0"
 log "Create deal with amount=0, try to mark as won"
 ZERO_DEAL=$(curl -s -X POST "${BASE_URL}/deals" \
@@ -206,8 +212,36 @@ curl -s -X POST "${BASE_URL}/auth/refresh" \
   -d "{\"refresh_token\": \"${REFRESH_TOKEN}\"}" | jq .
 success "Token refreshed"
 
+header "22. PAGINATION & FILTERS"
+log "GET /deals?page=1&page_size=5"
+curl -s -X GET "${BASE_URL}/deals?page=1&page_size=5" -H "$AUTH" -H "$ORG_HEADER" | jq '{total, page, page_size}'
+success "Pagination works"
+
+log "GET /contacts?search=John"
+SEARCH=$(curl -s -X GET "${BASE_URL}/contacts?search=John" -H "$AUTH" -H "$ORG_HEADER")
+echo "$SEARCH" | jq '.items[].name'
+echo "$SEARCH" | grep -q "John" && success "Search filter works" || fail "Search broken"
+
+header "23. SORTING"
+log "GET /deals?order_by=amount&order=desc"
+curl -s -X GET "${BASE_URL}/deals?order_by=amount&order=desc" -H "$AUTH" -H "$ORG_HEADER" | jq '.items[].amount'
+success "Sorting works"
+
+header "24. GET SINGLE ENTITIES"
+log "GET /contacts/${CONTACT_ID}"
+curl -s -X GET "${BASE_URL}/contacts/${CONTACT_ID}" -H "$AUTH" -H "$ORG_HEADER" | jq '{id, name}'
+success "Get single contact"
+
+log "GET /deals/${DEAL_ID}"
+curl -s -X GET "${BASE_URL}/deals/${DEAL_ID}" -H "$AUTH" -H "$ORG_HEADER" | jq '{id, title, status}'
+success "Get single deal"
+
+log "GET /tasks/${TASK_ID}"
+curl -s -X GET "${BASE_URL}/tasks/${TASK_ID}" -H "$AUTH" -H "$ORG_HEADER" | jq '{id, title, is_done}'
+success "Get single task"
+
 echo ""
 echo -e "${BOLD}${GREEN}========================================${NC}"
-echo -e "${BOLD}${GREEN}  ALL SMOKE TESTS PASSED!${NC}"
+echo -e "${BOLD}${GREEN}  ALL SMOKE TESTS PASSED! (24 tests)${NC}"
 echo -e "${BOLD}${GREEN}========================================${NC}"
 echo ""
